@@ -248,40 +248,33 @@ def create_app(test_config=None):
 
     @app.route('/quizzes', methods=['POST'])
     def get_quiz():
-        body = request.get_json()
-        category_id = None
-        category = None
-
         try:
-            if body is None or 'quiz_category' not in body or 'previous_questions' not in body:
-                abort(400)
+            body = request.get_json()
 
-            previous_questions = body['previous_questions'] if type(
-                body['previous_questions']) is list else []
+            category = body.get('quiz_category')
+            previous_questions = body.get('previous_questions')
 
-            if bool(body['quiz_category']):
-                category_id = body['quiz_category']['id']
-                category = Category.query.get(category_id)
-
-            if category is not None:
-                quize = Question.query.filter(Question.category == category_id).filter(Question.id.notin_(
-                    previous_questions)).order_by(func.random()).first()
-            elif category is None and len(previous_questions) < 5:
-                quize = Question.query.filter(Question.id.notin_(
-                    previous_questions)).order_by(func.random()).first()
+      
+            if category['type'] == 'click':
+                available_questions = Question.query.filter(
+                    Question.id.notin_((previous_questions))).all()
+            
             else:
-                quize = None
+                available_questions = Question.query.filter_by(
+                    category=category['id']).filter(
+                        Question.id.notin_((previous_questions))).all()
 
-            if quize is not None:
-                quize = quize.format()
+           
+            new_question = available_questions[random.randrange(
+                0, len(available_questions))].format() if len(
+                    available_questions) > 0 else None
 
             return jsonify({
-                'question': quize
+                'success': True,
+                'question': new_question
             })
-
         except:
-            print(sys.exc_info())
-            abort(500)
+            abort(422)
     """
     @TODO:
     Create error handlers for all expected errors
