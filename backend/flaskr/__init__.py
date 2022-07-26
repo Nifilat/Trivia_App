@@ -250,12 +250,13 @@ def create_app(test_config=None):
     def get_quiz():
         try:
             body = request.get_json()
+            category_id = quiz_category["id"]
 
             category = body.get('quiz_category')
             previous_questions = body.get('previous_questions')
 
       
-            if category['type'] == 'click':
+            if category_id == 0:
                 available_questions = Question.query.filter(
                     Question.id.notin_((previous_questions))).all()
             
@@ -265,9 +266,7 @@ def create_app(test_config=None):
                         Question.id.notin_((previous_questions))).all()
 
            
-            new_question = available_questions[random.randrange(
-                0, len(available_questions))].format() if len(
-                    available_questions) > 0 else None
+            question = random.choice(available_questions)
 
             return jsonify({
                 'success': True,
