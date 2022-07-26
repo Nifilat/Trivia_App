@@ -47,7 +47,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['categories'])
-        self.assertTrue(data['categories']['1'])
+        
 
     def test_delete_all_categories(self):
         res = self.client().delete('/api/v1.0/categories')
