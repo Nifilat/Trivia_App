@@ -257,16 +257,16 @@ def create_app(test_config=None):
 
       
             if category_id == 0:
-                available_questions = Question.query.filter(
+                questions_available = Question.query.filter(
                     Question.id.notin_((previous_questions))).all()
             
             else:
-                available_questions = Question.query.filter_by(
+                questions_available = Question.query.filter_by(
                     category=category['id']).filter(
                         Question.id.notin_((previous_questions))).all()
 
            
-            question = random.choice(available_questions)
+            question = random.choice(questions_available)
 
             return jsonify({
                 'success': True,
