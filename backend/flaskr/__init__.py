@@ -86,7 +86,7 @@ def create_app(test_config=None):
     Clicking on the page numbers should update the questions.
     """
 
-    @app.route("/questions")
+    @app.route("/api/questions")
     def retrieve_questions():
         selection = Question.query.order_by(Question.id).all()
         current_questions = paginate_questions(request, selection)
@@ -115,7 +115,7 @@ def create_app(test_config=None):
     """
 
 
-    @app.route("/questions/<int:question_id>", methods=["DELETE"])
+    @app.route("/api/questions/<int:question_id>", methods=["DELETE"])
     def delete_question(question_id):
         try:
             question = Question.query.get(question_id)
@@ -150,7 +150,7 @@ def create_app(test_config=None):
     of the questions list in the "List" tab.
     """
 
-    @app.route('/questions', methods=['POST'])
+    @app.route('/api/questions', methods=['POST'])
     def create_question():
         body = request.get_json()
 
@@ -246,7 +246,7 @@ def create_app(test_config=None):
     and shown whether they were correct or not.
     """
 
-    @app.route('/quizzes', methods=['POST'])
+    @app.route('/api/quizzes', methods=['POST'])
     def get_quiz():
         try:
             body = request.get_json()
